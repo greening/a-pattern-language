@@ -4,13 +4,13 @@ import { Fragment, useState } from 'react';
 
 import TitleWithConfidence from '@/app/components/TitleWithConfidence';
 import SubSection from '@/app/components/SubSection';
-import { Confidence, type SectionDto, type SubSectionDto } from '@/sanity/lib/definitions';
+import { Confidence, type SectionDto, type SubSectionDto, type PatternBaseDto } from '@/sanity/lib/definitions';
 import BlockContent from './BlockContent';
 import SectionSidebar from '@/app/components/SectionSidebar';
 import ImageWithMultiply from '@/app/components/ImageWithMultiply';
 import AboveTheFold from '@/app/components/AboveTheFold';
 
-const Index = ({ sections }: { sections: SectionDto[] }) => {
+const Index = ({ sections, orphanedPatterns = [] }: { sections: SectionDto[], orphanedPatterns?: PatternBaseDto[] }) => {
   const [selectedSection, setSelectedSection] = useState<string | undefined>(undefined);
 
   return (
@@ -53,7 +53,7 @@ const Index = ({ sections }: { sections: SectionDto[] }) => {
           </div>
         </div>
       </div>
-      <SectionSidebar sections={sections} selectedSection={selectedSection} />
+      <SectionSidebar sections={sections} selectedSection={selectedSection} orphanedPatterns={orphanedPatterns} />
     </>
   );
 };

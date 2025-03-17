@@ -6,7 +6,8 @@ import Link from 'next/link';
 import Sidebar from '@/app/components/Sidebar';
 import type { SectionDto, SubSectionDto, PatternBaseDto } from '@/sanity/lib/definitions';
 import PatternTitle from '@/app/components/PatternTitle';
-import OrphanedPatterns from '@/app/components/OrphanedPatterns';
+import PatternLink from '@/app/components/PatternLink';
+import PatternGroup from '@/app/components/PatternGroup';
 
 type PatternsSidebarProps = {
   sections: SectionDto[];
@@ -72,17 +73,12 @@ const PatternsSidebarContents = ({ sections, orphanedPatterns = [] }: PatternsSi
                   </div>
                 )}
                 {subSection.patterns?.map(pattern => (
-                  <Fragment key={pattern._id}>
-                    {pathname.includes(pattern.slug) ? (
-                      <div className="flex font-bold py-1">
-                        <PatternTitle minimal number={pattern.number} name={pattern.name} />
-                      </div>
-                    ) : (
-                      <Link href={`/patterns/${pattern.slug}`} className="flex group py-1">
-                        <PatternTitle minimal number={pattern.number} name={pattern.name} />
-                      </Link>
-                    )}
-                  </Fragment>
+                  <PatternLink
+                    key={pattern._id}
+                    pattern={pattern}
+                    isActive={pathname.includes(pattern.slug)}
+                    minimal={true}
+                  />
                 ))}
               </div>
             ))}
@@ -92,9 +88,10 @@ const PatternsSidebarContents = ({ sections, orphanedPatterns = [] }: PatternsSi
       {/* Display orphaned patterns if they exist */}
       {orphanedPatterns && orphanedPatterns.length > 0 && (
         <div ref={orphanedSection} className="flex flex-col gap-y-1">
-          <OrphanedPatterns 
-            patterns={orphanedPatterns} 
-            minimal={true} 
+          <PatternGroup
+            title="Uncategorized Patterns"
+            patterns={orphanedPatterns}
+            minimal={true}
           />
         </div>
       )}

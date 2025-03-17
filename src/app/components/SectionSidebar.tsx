@@ -6,7 +6,8 @@ import classNames from 'classnames';
 import type { SectionDto, PatternBaseDto } from '@/sanity/lib/definitions';
 import SubSectionItems from '@/app/components/SubSectionItems';
 import Sidebar from '@/app/components/Sidebar';
-import OrphanedPatterns from '@/app/components/OrphanedPatterns';
+import PatternGroup from '@/app/components/PatternGroup';
+import { usePathname } from 'next/navigation';
 
 type SectionSidebarProps = {
   sections: SectionDto[];
@@ -24,7 +25,10 @@ const SectionSidebarContents = ({
   linkSectionName = true,
   onClick,
   orphanedPatterns = [],
-}: SectionSidebarProps) => (
+}: SectionSidebarProps) => {
+  const pathname = usePathname();
+  
+  return (
   <>
     {sections.map(section => (
       <div key={section._id} className="flex flex-col text-sm">
@@ -74,10 +78,15 @@ const SectionSidebarContents = ({
     
     {/* Display orphaned patterns if they exist */}
     {orphanedPatterns && orphanedPatterns.length > 0 && (
-      <OrphanedPatterns patterns={orphanedPatterns} onClick={onClick} />
+      <PatternGroup
+        title="Uncategorized Patterns"
+        patterns={orphanedPatterns}
+        onClick={onClick}
+      />
     )}
   </>
 );
+}
 
 const SectionSidebar = (props: SectionSidebarProps) => {
   return (

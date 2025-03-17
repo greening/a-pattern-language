@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import classNames from 'classnames';
 import { Transition, TransitionChild } from '@headlessui/react';
+import RefreshButton from './RefreshButton';
 
 type SidebarProps = {
   title: string;
@@ -20,13 +21,16 @@ const Sidebar = ({ title, renderContent }: SidebarProps) => {
   return (
     <>
       <div>
-        <button
-          type="button"
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className={tableOfContentsClasses}
-        >
-          {title}
-        </button>
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className={tableOfContentsClasses}
+          >
+            {title}
+          </button>
+          <RefreshButton className="fixed z-10 left-[180px] top-0 h-10 flex items-center" />
+        </div>
         <Transition show={isSidebarOpen}>
           <TransitionChild>
             <div

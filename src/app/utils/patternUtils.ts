@@ -1,24 +1,11 @@
 import { sanityFetch } from '@/sanity/lib/live';
 import { sectionsQuery, allPatternsQuery, type SectionDto, type PatternBaseDto } from '@/sanity/lib/definitions';
-
-// Cache for patterns and sections to avoid redundant fetches
-let patternsCache: PatternBaseDto[] | null = null;
-let sectionsCache: SectionDto[] | null = null;
-let orphanedPatternsCache: PatternBaseDto[] | null = null;
+import { cache } from 'react';
 
 /**
- * Fetches all patterns and sections, with caching to improve performance
+ * Fetches all patterns and sections with React's cache
  */
-export async function fetchPatternsAndSections() {
-  // Use cached data if available
-  if (patternsCache && sectionsCache) {
-    return {
-      patterns: patternsCache,
-      sections: sectionsCache,
-      orphanedPatterns: orphanedPatternsCache || []
-    };
-  }
-
+export const fetchPatternsAndSections = cache(async () => {
   // Fetch data in parallel
   const [patternsResponse, sectionsResponse] = await Promise.all([
     sanityFetch({ query: allPatternsQuery }),
@@ -45,23 +32,19 @@ export async function fetchPatternsAndSections() {
   // Filter out patterns that are not referenced in any section
   const orphanedPatterns = patterns.filter(pattern => !referencedPatternIds.has(pattern._id));
 
-  // Cache the results
-  patternsCache = patterns;
-  sectionsCache = sections;
-  orphanedPatternsCache = orphanedPatterns;
-
   return { 
     patterns, 
     sections, 
     orphanedPatterns 
   };
-}
+});
+
+// Global variable to track if we need to bypass cache
+let shouldBypassCache = false;
 
 /**
- * Resets the cache, useful when data might have changed
+ * Triggers a refresh of the pattern data on next fetch
  */
-export function resetPatternCache() {
-  patternsCache = null;
-  sectionsCache = null;
-  orphanedPatternsCache = null;
+export function refreshPatternData() {
+  shouldBypassCache = true;
 }

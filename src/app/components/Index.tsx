@@ -6,7 +6,7 @@ import TitleWithConfidence from '@/app/components/TitleWithConfidence';
 import SubSection from '@/app/components/SubSection';
 import { Confidence, type SectionDto, type SubSectionDto, type PatternBaseDto } from '@/sanity/lib/definitions';
 import BlockContent from './BlockContent';
-import SectionSidebar from '@/app/components/SectionSidebar';
+import UnifiedSidebar from '@/app/components/UnifiedSidebar';
 import ImageWithMultiply from '@/app/components/ImageWithMultiply';
 import AboveTheFold from '@/app/components/AboveTheFold';
 
@@ -53,7 +53,7 @@ const Index = ({ sections, orphanedPatterns = [] }: { sections: SectionDto[], or
           </div>
         </div>
       </div>
-      <SectionSidebar sections={sections} selectedSection={selectedSection} orphanedPatterns={orphanedPatterns} />
+      <UnifiedSidebar sections={sections} selectedSection={selectedSection} orphanedPatterns={orphanedPatterns} />
     </>
   );
 };

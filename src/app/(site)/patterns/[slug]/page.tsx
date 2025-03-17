@@ -9,8 +9,7 @@ import {
   type PatternBaseDto,
 } from '@/sanity/lib/definitions';
 import Pattern from '@/app/components/Pattern';
-import PatternsSidebar from '@/app/components/PatternsSidebar';
-import SectionSidebar from '@/app/components/SectionSidebar';
+import UnifiedSidebar from '@/app/components/UnifiedSidebar';
 import portableTextToPlainText from '@/app/helpers/portableTextToPlainText';
 import { urlFor } from '@/sanity/lib/image';
 import { fetchPatternsAndSections } from '@/app/utils/patternUtils';
@@ -66,9 +65,18 @@ export default async function PatternPage(props: Props) {
     <>
       <Pattern pattern={pattern} />
       {pattern?.sidebarSection ? (
-        <SectionSidebar sections={[pattern.sidebarSection]} showType="items" />
+        <UnifiedSidebar 
+          sections={[pattern.sidebarSection]} 
+          showType="items" 
+          title="Pattern Contents" 
+        />
       ) : (
-        <PatternsSidebar sections={sections} orphanedPatterns={orphanedPatterns} />
+        <UnifiedSidebar 
+          sections={sections} 
+          orphanedPatterns={orphanedPatterns} 
+          title="Index" 
+          isPatternIndex={true} 
+        />
       )}
     </>
   );

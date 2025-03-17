@@ -4,29 +4,36 @@ import { usePathname } from 'next/navigation';
 import { Fragment, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Sidebar from '@/app/components/Sidebar';
-import type { SectionDto, SubSectionDto } from '@/sanity/lib/definitions';
+import type { SectionDto, SubSectionDto, PatternBaseDto } from '@/sanity/lib/definitions';
 import PatternTitle from '@/app/components/PatternTitle';
+import OrphanedPatterns from '@/app/components/OrphanedPatterns';
 
 type PatternsSidebarProps = {
   sections: SectionDto[];
+  orphanedPatterns?: PatternBaseDto[];
 };
 
-const PatternsSidebarContents = ({ sections }: PatternsSidebarProps) => {
+const PatternsSidebarContents = ({ sections, orphanedPatterns = [] }: PatternsSidebarProps) => {
   const pathname = usePathname();
   const container = useRef<HTMLDivElement>(null);
   const currentSection = useRef<HTMLDivElement>(null);
+  const orphanedSection = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const content = container.current;
     const parent = content?.parentElement;
-    const pattern = currentSection.current;
+    
+    // Check if current pattern is in the orphaned patterns
+    const isOrphaned = orphanedPatterns.some(p => pathname.includes(p.slug));
+    const pattern = isOrphaned ? orphanedSection.current : currentSection.current;
+    
     if (!content || !parent || !pattern) return;
 
     const patternTop = pattern.offsetTop;
     const distanceFromTop = 16;
 
     parent.scrollTop = patternTop - distanceFromTop;
-  }, []);
+  }, [pathname, orphanedPatterns]);
 
   return (
     <div className="flex flex-col gap-y-8" ref={container}>
@@ -81,6 +88,16 @@ const PatternsSidebarContents = ({ sections }: PatternsSidebarProps) => {
             ))}
         </div>
       ))}
+      
+      {/* Display orphaned patterns if they exist */}
+      {orphanedPatterns && orphanedPatterns.length > 0 && (
+        <div ref={orphanedSection} className="flex flex-col gap-y-1">
+          <OrphanedPatterns 
+            patterns={orphanedPatterns} 
+            minimal={true} 
+          />
+        </div>
+      )}
     </div>
   );
 };

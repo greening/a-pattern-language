@@ -5,14 +5,15 @@ import {
   allPatternsQuery,
   patternBySlugQuery,
   type PatternDto,
-  sectionsQuery,
   type SectionDto,
+  type PatternBaseDto,
 } from '@/sanity/lib/definitions';
 import Pattern from '@/app/components/Pattern';
 import PatternsSidebar from '@/app/components/PatternsSidebar';
 import SectionSidebar from '@/app/components/SectionSidebar';
 import portableTextToPlainText from '@/app/helpers/portableTextToPlainText';
 import { urlFor } from '@/sanity/lib/image';
+import { fetchPatternsAndSections } from '@/app/utils/patternUtils';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -59,9 +60,7 @@ export default async function PatternPage(props: Props) {
 
   if (!pattern?._id) return notFound();
 
-  const { data: sections }: { data: SectionDto[] } = await sanityFetch({
-    query: sectionsQuery,
-  });
+  const { sections, orphanedPatterns } = await fetchPatternsAndSections();
 
   return (
     <>
@@ -69,7 +68,7 @@ export default async function PatternPage(props: Props) {
       {pattern?.sidebarSection ? (
         <SectionSidebar sections={[pattern.sidebarSection]} showType="items" />
       ) : (
-        <PatternsSidebar sections={sections} />
+        <PatternsSidebar sections={sections} orphanedPatterns={orphanedPatterns} />
       )}
     </>
   );
